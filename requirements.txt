@@ -1,0 +1,28 @@
+# Core ML / QLoRA stack (GPU required for training)
+torch>=2.3.0
+transformers>=4.44.0
+peft>=0.12.0
+trl>=0.9.6
+bitsandbytes>=0.43.0
+accelerate>=0.33.0
+datasets>=2.20.0
+
+# Data / SQL
+duckdb>=1.0.0
+sqlglot>=25.0.0
+pandas>=2.0.0
+numpy>=1.26.0
+
+# Synthetic data
+faker>=25.0.0
+
+# Metrics / plotting
+scikit-learn>=1.4.0
+matplotlib>=3.8.0
+
+# Config
+pyyaml>=6.0
+
+# Optional: connect to Snowflake at work.
+# Install with:  pip install "snowflake-connector-python[pandas]>=3.11.0"
+# snowflake-connector-python>=3.11.0

@@ -1,0 +1,131 @@
+{
+  "pilot": true,
+  "model": "gpt2",
+  "lora_r": 16,
+  "epochs": 1,
+  "max_train_samples": 60,
+  "train_runtime_sec": 34.0418,
+  "train_loss": 3.73999924659729,
+  "trainable_params": 589824,
+  "total_params": 125029632,
+  "loss_history": [
+    {
+      "step": 1,
+      "loss": 4.078864097595215
+    },
+    {
+      "step": 2,
+      "loss": 3.9792909622192383
+    },
+    {
+      "step": 3,
+      "loss": 4.098052978515625
+    },
+    {
+      "step": 4,
+      "loss": 3.918328285217285
+    },
+    {
+      "step": 5,
+      "loss": 3.9274258613586426
+    },
+    {
+      "step": 6,
+      "loss": 3.798926830291748
+    },
+    {
+      "step": 7,
+      "loss": 3.756561040878296
+    },
+    {
+      "step": 8,
+      "loss": 3.6693906784057617
+    },
+    {
+      "step": 9,
+      "loss": 3.6228890419006348
+    },
+    {
+      "step": 10,
+      "loss": 3.616246461868286
+    },
+    {
+      "step": 11,
+      "loss": 3.6249592304229736
+    },
+    {
+      "step": 12,
+      "loss": 3.5187621116638184
+    },
+    {
+      "step": 13,
+      "loss": 3.52778959274292
+    },
+    {
+      "step": 14,
+      "loss": 3.484780788421631
+    },
+    {
+      "step": 15,
+      "loss": 3.4777207374572754
+    }
+  ],
+  "routing_lora": {
+    "task": "skill_routing_classification",
+    "model": "distilbert-base-uncased",
+    "method": "LoRA r=16",
+    "epochs": 2,
+    "train_runtime_sec": 23.8407,
+    "train_loss": 1.274972567955653,
+    "trainable_params": 890887,
+    "total_params": 67849742,
+    "loss_history": [
+      {
+        "step": 5,
+        "loss": 1.8573493957519531
+      },
+      {
+        "step": 10,
+        "loss": 1.7051860809326171
+      },
+      {
+        "step": 15,
+        "loss": 1.4489386558532715
+      },
+      {
+        "step": 20,
+        "loss": 1.4357717514038086
+      },
+      {
+        "step": 25,
+        "loss": 1.250511360168457
+      },
+      {
+        "step": 30,
+        "loss": 1.0938058853149415
+      },
+      {
+        "step": 35,
+        "loss": 0.9890275955200195
+      },
+      {
+        "step": 40,
+        "loss": 0.9518335342407227
+      },
+      {
+        "step": 45,
+        "loss": 0.9354178428649902
+      }
+    ],
+    "base_head_test": {
+      "routing_accuracy": 0.2711,
+      "macro_f1": 0.0609,
+      "n": 166
+    },
+    "lora_test": {
+      "routing_accuracy": 0.6145,
+      "macro_f1": 0.5369,
+      "n": 166
+    }
+  }
+}

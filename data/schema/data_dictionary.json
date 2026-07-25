@@ -1,0 +1,69 @@
+{
+  "schema_id": "enterprise_sales_v1",
+  "description": "Business metric definitions and rules for the GlobalTrade Analytics BI agent. Synthetic reference only.",
+  "business_rules": [
+    "All queries are read-only. Never generate INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE, MERGE, CREATE, or GRANT.",
+    "Revenue is stored net of discount in FACT_SALES.revenue.",
+    "Join facts to dimensions on surrogate keys (date_id, customer_id, product_id, region_id).",
+    "Always add a LIMIT to exploratory row-level queries unless an aggregate is requested.",
+    "Time comparisons use DIM_DATE.year / quarter / month."
+  ],
+  "metrics": {
+    "gross_margin": {
+      "definition": "Net revenue minus total cost.",
+      "formula": "SUM(revenue) - SUM(cost)",
+      "source_tables": ["FACT_SALES"],
+      "unit": "currency"
+    },
+    "gross_margin_pct": {
+      "definition": "Gross margin as a percentage of net revenue.",
+      "formula": "(SUM(revenue) - SUM(cost)) / NULLIF(SUM(revenue), 0) * 100",
+      "source_tables": ["FACT_SALES"],
+      "unit": "percent"
+    },
+    "yoy_growth": {
+      "definition": "Year-over-year revenue growth percent comparing a period to the same period one year earlier.",
+      "formula": "(current_period_revenue - prior_year_revenue) / NULLIF(prior_year_revenue, 0) * 100",
+      "source_tables": ["FACT_SALES", "DIM_DATE"],
+      "unit": "percent"
+    },
+    "total_revenue": {
+      "definition": "Sum of net revenue.",
+      "formula": "SUM(revenue)",
+      "source_tables": ["FACT_SALES"],
+      "unit": "currency"
+    },
+    "units_sold": {
+      "definition": "Total quantity of units sold.",
+      "formula": "SUM(quantity)",
+      "source_tables": ["FACT_SALES"],
+      "unit": "count"
+    },
+    "average_discount": {
+      "definition": "Mean discount fraction applied across sales lines.",
+      "formula": "AVG(discount_pct)",
+      "source_tables": ["FACT_SALES"],
+      "unit": "fraction"
+    },
+    "forecast_attainment": {
+      "definition": "Actual revenue divided by forecasted revenue.",
+      "formula": "SUM(FACT_SALES.revenue) / NULLIF(SUM(FACT_FORECAST.forecast_revenue), 0) * 100",
+      "source_tables": ["FACT_SALES", "FACT_FORECAST"],
+      "unit": "percent"
+    },
+    "on_time_delivery_rate": {
+      "definition": "Share of shipments delivered on time.",
+      "formula": "AVG(CASE WHEN on_time_flag THEN 1.0 ELSE 0.0 END) * 100",
+      "source_tables": ["FACT_SHIPMENT"],
+      "unit": "percent"
+    }
+  },
+  "synonyms": {
+    "sales": "revenue",
+    "turnover": "revenue",
+    "margin": "gross_margin",
+    "clients": "customers",
+    "sku": "product",
+    "geo": "region"
+  }
+}

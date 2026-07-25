@@ -1,0 +1,127 @@
+{
+  "raw_count": 1700,
+  "after_dedup": 1092,
+  "after_validation": 1092,
+  "splits": {
+    "train": 764,
+    "val": 162,
+    "test": 166
+  },
+  "train_distribution": {
+    "total": 764,
+    "by_task_type": {
+      "needs_clarification": 70,
+      "text_to_sql": 274,
+      "skill_routing": 280,
+      "refuse_unsafe": 105,
+      "insufficient_schema": 35
+    },
+    "by_skill": {
+      "NEEDS_CLARIFICATION": 70,
+      "SQL_ANALYST": 236,
+      "DOCUMENT_SEARCH": 54,
+      "REFUSE_UNSAFE": 105,
+      "GENERAL_QA": 90,
+      "FINANCE_ANALYST": 105,
+      "SALES_INTELLIGENCE": 104
+    },
+    "by_safety_status": {
+      "needs_clarification": 70,
+      "safe": 554,
+      "unsafe": 105,
+      "out_of_scope": 35
+    },
+    "by_complexity_tag": {
+      "ambiguous": 70,
+      "filter": 139,
+      "aggregation": 274,
+      "routing": 280,
+      "write_operation": 105,
+      "unsafe": 105,
+      "join": 217,
+      "trend": 13,
+      "time_comparison": 44,
+      "ranking": 55,
+      "out_of_scope": 35,
+      "calculated_kpi": 49
+    }
+  },
+  "val_distribution": {
+    "total": 162,
+    "by_task_type": {
+      "skill_routing": 60,
+      "text_to_sql": 58,
+      "insufficient_schema": 7,
+      "refuse_unsafe": 22,
+      "needs_clarification": 15
+    },
+    "by_skill": {
+      "SQL_ANALYST": 54,
+      "GENERAL_QA": 16,
+      "REFUSE_UNSAFE": 22,
+      "NEEDS_CLARIFICATION": 15,
+      "SALES_INTELLIGENCE": 19,
+      "FINANCE_ANALYST": 25,
+      "DOCUMENT_SEARCH": 11
+    },
+    "by_safety_status": {
+      "safe": 118,
+      "out_of_scope": 7,
+      "unsafe": 22,
+      "needs_clarification": 15
+    },
+    "by_complexity_tag": {
+      "routing": 60,
+      "ranking": 8,
+      "join": 47,
+      "aggregation": 58,
+      "out_of_scope": 7,
+      "write_operation": 22,
+      "unsafe": 22,
+      "ambiguous": 15,
+      "calculated_kpi": 14,
+      "filter": 32,
+      "trend": 3,
+      "time_comparison": 14
+    }
+  },
+  "test_distribution": {
+    "total": 166,
+    "by_task_type": {
+      "skill_routing": 60,
+      "text_to_sql": 60,
+      "refuse_unsafe": 23,
+      "insufficient_schema": 8,
+      "needs_clarification": 15
+    },
+    "by_skill": {
+      "SQL_ANALYST": 45,
+      "REFUSE_UNSAFE": 23,
+      "SALES_INTELLIGENCE": 23,
+      "GENERAL_QA": 24,
+      "FINANCE_ANALYST": 26,
+      "NEEDS_CLARIFICATION": 15,
+      "DOCUMENT_SEARCH": 10
+    },
+    "by_safety_status": {
+      "safe": 120,
+      "unsafe": 23,
+      "out_of_scope": 8,
+      "needs_clarification": 15
+    },
+    "by_complexity_tag": {
+      "routing": 60,
+      "filter": 25,
+      "time_comparison": 12,
+      "join": 51,
+      "aggregation": 60,
+      "write_operation": 23,
+      "unsafe": 23,
+      "out_of_scope": 8,
+      "ranking": 14,
+      "calculated_kpi": 14,
+      "ambiguous": 15,
+      "trend": 5
+    }
+  }
+}

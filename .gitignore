@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+env/
+# Large generated artifacts (regenerate with the pipeline)
+data/raw/*.duckdb
+data/raw/*.csv
+data/raw/instructions.jsonl
+results/adapters/
+*.egg-info/
+.pytest_cache/
+# Draft-watermarked PDF; commit the clean recompiled PDF instead
+Salgado__C_Final_Research_Paper___SEAAD_QLoRA_Analytics_Agent (1).pdf
+# Local assistant tooling state
+.maestro/

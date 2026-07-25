@@ -1,0 +1,26 @@
+{
+  "title": "SEAAD: Efficient Domain Adaptation of Open Language Models for Enterprise Analytics Agents Using LoRA and QLoRA",
+  "description": "<p>Code, dataset generators, and paper for a study of parameter-efficient fine-tuning (LoRA/QLoRA) applied to enterprise analytics-agent components: seven-way skill routing and safe, read-only SQL generation.</p><p>The repository introduces SEAAD (Synthetic Enterprise Analytics Agent Dataset), a privacy-safe benchmark over a fictional star-schema warehouse (GlobalTrade Analytics), with 1,092 validated instruction records covering text-to-SQL, skill routing, unsafe-query refusal, clarification, and insufficient-schema tasks. All data are synthetic; no proprietary schemas or records are used.</p><p>Reported experiments: LoRA fine-tuning of a DistilBERT skill router (27.1% to 61.5% accuracy, macro-F1 0.061 to 0.537, training 1.31% of parameters), a generative LoRA pilot, and a deterministic template baseline (92.8% routing accuracy, 100% safety refusal, 23.3% SQL execution accuracy). A complete QLoRA training pipeline targeting Qwen2.5-3B-Instruct on consumer GPUs (RTX 5090 / Google Colab) is included for reproduction.</p>",
+  "creators": [
+    {
+      "name": "Salgado, Carlos",
+      "affiliation": "Florida International University"
+    }
+  ],
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "keywords": [
+    "large language models",
+    "LoRA",
+    "QLoRA",
+    "parameter-efficient fine-tuning",
+    "text-to-SQL",
+    "business intelligence",
+    "analytics agents",
+    "skill routing",
+    "synthetic data",
+    "benchmark"
+  ]
+}

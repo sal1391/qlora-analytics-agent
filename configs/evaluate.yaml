@@ -1,0 +1,23 @@
+# Evaluation configuration.
+
+model_name: "Qwen/Qwen2.5-3B-Instruct"
+adapters_dir: "results/adapters"
+db_path: "data/raw/enterprise.duckdb"
+test_file: "data/processed/test.jsonl"
+out_dir: "results"
+
+# Conditions to evaluate. GPU conditions skip gracefully if no CUDA / adapter.
+conditions:
+  - template_baseline
+  - base_zero_shot
+  - base_few_shot
+  - qlora_r8
+  - qlora_r16
+  - qlora_r32
+
+# Few-shot demonstrations count for base_few_shot.
+few_shot_k: 3
+
+# Generation
+max_new_tokens: 256
+max_samples: null      # null = full test set

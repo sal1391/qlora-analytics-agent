@@ -1,0 +1,29 @@
+# QLoRA config for local RTX 5090 (32GB VRAM) — Qwen2.5-3B-Instruct.
+# Batch size is auto-adapted at runtime to available VRAM; the values below are
+# the defaults for a 24-32GB card.
+
+model_name: "Qwen/Qwen2.5-3B-Instruct"
+train_file: "data/processed/train.jsonl"
+val_file: "data/processed/val.jsonl"
+output_dir: "results/adapters/qlora_r16"
+
+# LoRA
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+
+# Optimization
+epochs: 3
+learning_rate: 0.0002        # 2e-4
+max_seq_len: 1024
+per_device_batch_size: 4
+gradient_accumulation_steps: 4
+warmup_ratio: 0.03
+weight_decay: 0.0
+logging_steps: 10
+save_strategy: "epoch"
+packing: true
+gradient_checkpointing: true
+seed: 42
+max_samples: null

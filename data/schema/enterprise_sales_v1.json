@@ -1,0 +1,128 @@
+{
+  "schema_id": "enterprise_sales_v1",
+  "company": "GlobalTrade Analytics",
+  "description": "Fictional enterprise sales star-schema for BI analytics agent research. All data is synthetic. No real company, customer, or employer data.",
+  "dialect": "duckdb",
+  "grain_notes": "FACT_SALES is one row per order line. Dimensions join on surrogate keys.",
+  "tables": [
+    {
+      "name": "DIM_CUSTOMER",
+      "type": "dimension",
+      "primary_key": "customer_id",
+      "description": "Customer master with segment and geography attributes.",
+      "columns": [
+        {"name": "customer_id", "type": "INTEGER", "description": "Surrogate customer key"},
+        {"name": "customer_name", "type": "VARCHAR", "description": "Synthetic customer/company name"},
+        {"name": "segment", "type": "VARCHAR", "description": "Enterprise, Mid-Market, SMB, Consumer"},
+        {"name": "industry", "type": "VARCHAR", "description": "Industry vertical"},
+        {"name": "region_id", "type": "INTEGER", "description": "FK to DIM_REGION"},
+        {"name": "account_tier", "type": "VARCHAR", "description": "Platinum, Gold, Silver, Bronze"},
+        {"name": "signup_date", "type": "DATE", "description": "Date the customer was onboarded"}
+      ]
+    },
+    {
+      "name": "DIM_PRODUCT",
+      "type": "dimension",
+      "primary_key": "product_id",
+      "description": "Product master with category and pricing attributes.",
+      "columns": [
+        {"name": "product_id", "type": "INTEGER", "description": "Surrogate product key"},
+        {"name": "product_name", "type": "VARCHAR", "description": "Synthetic product name"},
+        {"name": "category", "type": "VARCHAR", "description": "Product category"},
+        {"name": "subcategory", "type": "VARCHAR", "description": "Product subcategory"},
+        {"name": "unit_cost", "type": "DECIMAL(12,2)", "description": "Standard unit cost"},
+        {"name": "list_price", "type": "DECIMAL(12,2)", "description": "List/MSRP unit price"},
+        {"name": "launch_date", "type": "DATE", "description": "Product launch date"}
+      ]
+    },
+    {
+      "name": "DIM_REGION",
+      "type": "dimension",
+      "primary_key": "region_id",
+      "description": "Geographic region hierarchy.",
+      "columns": [
+        {"name": "region_id", "type": "INTEGER", "description": "Surrogate region key"},
+        {"name": "region_name", "type": "VARCHAR", "description": "Region name"},
+        {"name": "country", "type": "VARCHAR", "description": "Country"},
+        {"name": "sales_territory", "type": "VARCHAR", "description": "Sales territory grouping"}
+      ]
+    },
+    {
+      "name": "DIM_DATE",
+      "type": "dimension",
+      "primary_key": "date_id",
+      "description": "Calendar date dimension at day grain.",
+      "columns": [
+        {"name": "date_id", "type": "INTEGER", "description": "Surrogate date key (YYYYMMDD)"},
+        {"name": "full_date", "type": "DATE", "description": "Calendar date"},
+        {"name": "year", "type": "INTEGER", "description": "Calendar year"},
+        {"name": "quarter", "type": "INTEGER", "description": "Calendar quarter 1-4"},
+        {"name": "month", "type": "INTEGER", "description": "Month number 1-12"},
+        {"name": "month_name", "type": "VARCHAR", "description": "Month name"},
+        {"name": "fiscal_year", "type": "INTEGER", "description": "Fiscal year"}
+      ]
+    },
+    {
+      "name": "FACT_SALES",
+      "type": "fact",
+      "primary_key": "sales_id",
+      "description": "Order-line level sales transactions.",
+      "columns": [
+        {"name": "sales_id", "type": "INTEGER", "description": "Surrogate sales fact key"},
+        {"name": "date_id", "type": "INTEGER", "description": "FK to DIM_DATE"},
+        {"name": "customer_id", "type": "INTEGER", "description": "FK to DIM_CUSTOMER"},
+        {"name": "product_id", "type": "INTEGER", "description": "FK to DIM_PRODUCT"},
+        {"name": "region_id", "type": "INTEGER", "description": "FK to DIM_REGION"},
+        {"name": "quantity", "type": "INTEGER", "description": "Units sold"},
+        {"name": "unit_price", "type": "DECIMAL(12,2)", "description": "Actual selling price per unit"},
+        {"name": "discount_pct", "type": "DECIMAL(5,4)", "description": "Discount fraction applied 0-1"},
+        {"name": "revenue", "type": "DECIMAL(14,2)", "description": "Net revenue = quantity * unit_price * (1 - discount_pct)"},
+        {"name": "cost", "type": "DECIMAL(14,2)", "description": "Total cost = quantity * unit_cost"}
+      ]
+    },
+    {
+      "name": "FACT_FORECAST",
+      "type": "fact",
+      "primary_key": "forecast_id",
+      "description": "Monthly revenue forecast by product and region.",
+      "columns": [
+        {"name": "forecast_id", "type": "INTEGER", "description": "Surrogate forecast key"},
+        {"name": "date_id", "type": "INTEGER", "description": "FK to DIM_DATE (first of month)"},
+        {"name": "product_id", "type": "INTEGER", "description": "FK to DIM_PRODUCT"},
+        {"name": "region_id", "type": "INTEGER", "description": "FK to DIM_REGION"},
+        {"name": "forecast_revenue", "type": "DECIMAL(14,2)", "description": "Forecasted revenue"},
+        {"name": "forecast_quantity", "type": "INTEGER", "description": "Forecasted units"}
+      ]
+    },
+    {
+      "name": "FACT_INVENTORY",
+      "type": "fact",
+      "primary_key": "inventory_id",
+      "description": "Month-end inventory snapshot by product and region.",
+      "columns": [
+        {"name": "inventory_id", "type": "INTEGER", "description": "Surrogate inventory key"},
+        {"name": "date_id", "type": "INTEGER", "description": "FK to DIM_DATE (month-end)"},
+        {"name": "product_id", "type": "INTEGER", "description": "FK to DIM_PRODUCT"},
+        {"name": "region_id", "type": "INTEGER", "description": "FK to DIM_REGION"},
+        {"name": "units_on_hand", "type": "INTEGER", "description": "Units on hand"},
+        {"name": "reorder_point", "type": "INTEGER", "description": "Reorder threshold"}
+      ]
+    },
+    {
+      "name": "FACT_SHIPMENT",
+      "type": "fact",
+      "primary_key": "shipment_id",
+      "description": "Shipment / fulfillment events linked to sales.",
+      "columns": [
+        {"name": "shipment_id", "type": "INTEGER", "description": "Surrogate shipment key"},
+        {"name": "sales_id", "type": "INTEGER", "description": "FK to FACT_SALES"},
+        {"name": "date_id", "type": "INTEGER", "description": "FK to DIM_DATE (ship date)"},
+        {"name": "region_id", "type": "INTEGER", "description": "FK to DIM_REGION"},
+        {"name": "ship_quantity", "type": "INTEGER", "description": "Units shipped"},
+        {"name": "ship_cost", "type": "DECIMAL(12,2)", "description": "Shipping cost"},
+        {"name": "delivery_days", "type": "INTEGER", "description": "Days from order to delivery"},
+        {"name": "on_time_flag", "type": "BOOLEAN", "description": "TRUE if delivered on/before SLA"}
+      ]
+    }
+  ]
+}
