@@ -157,6 +157,23 @@ mean latency, trainable params, peak VRAM.
 
 ---
 
+## Results (SEAAD test set, n=166; 60 gold-SQL cases)
+
+| Condition         | Routing | SQL exec. | Safety | JSON |
+|-------------------|--------:|----------:|-------:|-----:|
+| Template baseline |  92.8%  |   23.3%   |  100%  | 100% |
+| Base zero-shot    |   0.0%  |   45.0%   |  56.5% | 98.8%|
+| Base 3-shot       |  36.8%  |   56.7%   |  100%  | 80.1%|
+| QLoRA r=8         |  80.1%  |   73.3%   |  100%  | 100% |
+| QLoRA r=16        |  92.2%  |   86.7%   |  100%  | 100% |
+| **QLoRA r=32**    | **95.8%** | **100%** | **100%** | **100%** |
+
+Trained on a single RTX 5090 laptop GPU (24 GB), ~5.1 GB peak VRAM, ~30 min
+per rank. Gold assistant turns are stripped from evaluation prompts
+(regression-tested in `tests/test_eval_no_leakage.py`).
+
+---
+
 ## E) Budget note
 
 - **Local RTX 5090:** free (your own hardware). Full 3B QLoRA at 2–3 epochs fits

@@ -71,7 +71,11 @@ def run_condition(predictor, test_samples: list[dict], con) -> dict:
     predictions_log: list[dict] = []
 
     for sample in test_samples:
-        contract, raw, latency = predictor.predict(sample["messages"])
+        # Never forward the gold assistant turn: test samples share the
+        # training-file layout, so ``messages`` ends with the reference
+        # answer. Leaking it lets the model copy its own prompt.
+        prompt_messages = [m for m in sample["messages"] if m["role"] != "assistant"]
+        contract, raw, latency = predictor.predict(prompt_messages)
         pred = {
             "skill": contract.get("skill"),
             "safety_status": contract.get("safety_status"),

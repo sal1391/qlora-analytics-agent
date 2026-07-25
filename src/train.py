@@ -189,7 +189,13 @@ def train_qlora(cfg: TrainConfig) -> dict:
 
     Path(cfg.output_dir).mkdir(parents=True, exist_ok=True)
 
-    sft_config = SFTConfig(
+    # trl renamed several kwargs across major versions (max_seq_length ->
+    # max_length, SFTTrainer tokenizer -> processing_class); pick whichever
+    # the installed version accepts.
+    import inspect
+
+    sft_params = inspect.signature(SFTConfig.__init__).parameters
+    sft_kwargs = dict(
         output_dir=cfg.output_dir,
         num_train_epochs=cfg.epochs,
         per_device_train_batch_size=per_device_bs,
@@ -202,21 +208,26 @@ def train_qlora(cfg: TrainConfig) -> dict:
         eval_strategy="epoch",
         bf16=hw["bf16"],
         fp16=not hw["bf16"],
-        max_seq_length=cfg.max_seq_len,
         packing=cfg.packing,
         gradient_checkpointing=cfg.gradient_checkpointing,
         optim="paged_adamw_8bit",
         seed=cfg.seed,
         report_to="none",
-        dataset_text_field="text",
     )
+    seq_len_key = "max_seq_length" if "max_seq_length" in sft_params else "max_length"
+    sft_kwargs[seq_len_key] = cfg.max_seq_len
+    if "dataset_text_field" in sft_params:
+        sft_kwargs["dataset_text_field"] = "text"
+    sft_config = SFTConfig(**sft_kwargs)
 
+    trainer_params = inspect.signature(SFTTrainer.__init__).parameters
+    tok_key = "processing_class" if "processing_class" in trainer_params else "tokenizer"
     trainer = SFTTrainer(
         model=model,
         args=sft_config,
         train_dataset=ds["train"],
         eval_dataset=ds["validation"],
-        tokenizer=tokenizer,
+        **{tok_key: tokenizer},
     )
 
     train_result = trainer.train()

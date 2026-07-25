@@ -133,6 +133,9 @@ def plot_training_loss() -> None:
     fig, ax = plt.subplots(figsize=(6.0, 3.6))
     plotted = False
     for i, (run, summary) in enumerate(tm.items()):
+        if not isinstance(summary, dict):
+            # Legacy pilot runs wrote flat scalars at the top level.
+            continue
         hist = summary.get("loss_history", [])
         if not hist:
             continue

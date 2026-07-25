@@ -127,5 +127,227 @@
       "macro_f1": 0.5369,
       "n": 166
     }
+  },
+  "qlora_r16": {
+    "model_name": "Qwen/Qwen2.5-3B-Instruct",
+    "lora_r": 16,
+    "epochs": 3,
+    "trainable_params": 7372800,
+    "total_params": 1706045440,
+    "final_train_loss": 0.2540331081383758,
+    "peak_vram_gb": 5.07,
+    "loss_history": [
+      {
+        "step": 10,
+        "loss": 1.7673526763916017
+      },
+      {
+        "step": 20,
+        "loss": 1.009822177886963
+      },
+      {
+        "step": 30,
+        "loss": 0.34918010234832764
+      },
+      {
+        "step": 40,
+        "loss": 0.09090394377708436
+      },
+      {
+        "step": 50,
+        "loss": 0.05243714451789856
+      },
+      {
+        "step": 60,
+        "loss": 0.05016242265701294
+      },
+      {
+        "step": 70,
+        "loss": 0.04561436176300049
+      },
+      {
+        "step": 80,
+        "loss": 0.041612285375595096
+      },
+      {
+        "step": 90,
+        "loss": 0.04085106253623962
+      },
+      {
+        "step": 100,
+        "loss": 0.03936284482479095
+      },
+      {
+        "step": 110,
+        "loss": 0.03835151493549347
+      },
+      {
+        "step": 120,
+        "loss": 0.03892908692359924
+      },
+      {
+        "step": 130,
+        "loss": 0.03779750764369964
+      },
+      {
+        "step": 140,
+        "loss": 0.03987570106983185
+      }
+    ],
+    "output_dir": "results/adapters/qlora_r16",
+    "hardware": {
+      "cuda": true,
+      "device_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "vram_gb": 25.7,
+      "bf16": true
+    }
+  },
+  "qlora_r8": {
+    "model_name": "Qwen/Qwen2.5-3B-Instruct",
+    "lora_r": 8,
+    "epochs": 3,
+    "trainable_params": 3686400,
+    "total_params": 1702359040,
+    "final_train_loss": 0.3289196120782031,
+    "peak_vram_gb": 5.05,
+    "loss_history": [
+      {
+        "step": 10,
+        "loss": 1.8714576721191407
+      },
+      {
+        "step": 20,
+        "loss": 1.2791600227355957
+      },
+      {
+        "step": 30,
+        "loss": 0.7748101234436036
+      },
+      {
+        "step": 40,
+        "loss": 0.2765571117401123
+      },
+      {
+        "step": 50,
+        "loss": 0.08548343777656556
+      },
+      {
+        "step": 60,
+        "loss": 0.06084824204444885
+      },
+      {
+        "step": 70,
+        "loss": 0.05249289274215698
+      },
+      {
+        "step": 80,
+        "loss": 0.047428733110427855
+      },
+      {
+        "step": 90,
+        "loss": 0.0462091863155365
+      },
+      {
+        "step": 100,
+        "loss": 0.04486928582191467
+      },
+      {
+        "step": 110,
+        "loss": 0.04413259327411652
+      },
+      {
+        "step": 120,
+        "loss": 0.044984248280525205
+      },
+      {
+        "step": 130,
+        "loss": 0.04362947642803192
+      },
+      {
+        "step": 140,
+        "loss": 0.04604875147342682
+      }
+    ],
+    "output_dir": "results/adapters/qlora_r8",
+    "hardware": {
+      "cuda": true,
+      "device_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "vram_gb": 25.7,
+      "bf16": true
+    }
+  },
+  "qlora_r32": {
+    "model_name": "Qwen/Qwen2.5-3B-Instruct",
+    "lora_r": 32,
+    "epochs": 3,
+    "trainable_params": 14745600,
+    "total_params": 1713418240,
+    "final_train_loss": 0.19458679813477728,
+    "peak_vram_gb": 5.11,
+    "loss_history": [
+      {
+        "step": 10,
+        "loss": 1.647292709350586
+      },
+      {
+        "step": 20,
+        "loss": 0.6255273818969727
+      },
+      {
+        "step": 30,
+        "loss": 0.10525530576705933
+      },
+      {
+        "step": 40,
+        "loss": 0.05444902777671814
+      },
+      {
+        "step": 50,
+        "loss": 0.04440099895000458
+      },
+      {
+        "step": 60,
+        "loss": 0.0435922384262085
+      },
+      {
+        "step": 70,
+        "loss": 0.03939743041992187
+      },
+      {
+        "step": 80,
+        "loss": 0.035887473821640016
+      },
+      {
+        "step": 90,
+        "loss": 0.034822145104408266
+      },
+      {
+        "step": 100,
+        "loss": 0.032929927110672
+      },
+      {
+        "step": 110,
+        "loss": 0.03163917362689972
+      },
+      {
+        "step": 120,
+        "loss": 0.031433552503585815
+      },
+      {
+        "step": 130,
+        "loss": 0.030958259105682374
+      },
+      {
+        "step": 140,
+        "loss": 0.031798169016838074
+      }
+    ],
+    "output_dir": "results/adapters/qlora_r32",
+    "hardware": {
+      "cuda": true,
+      "device_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "vram_gb": 25.7,
+      "bf16": true
+    }
   }
 }

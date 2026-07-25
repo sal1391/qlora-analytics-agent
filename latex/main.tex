@@ -32,7 +32,7 @@ carlos.salgado30@yahoo.com}
 }
 \maketitle
 \begin{abstract}
-Enterprise business-intelligence (BI) teams increasingly deploy large language model (LLM) agents that translate natural-language questions into database queries, select analytical skills, and summarize results. Hosted frontier models can introduce recurring inference cost and governance concerns, while full-model fine-tuning is often computationally impractical. This paper studies parameter-efficient fine-tuning---Low-Rank Adaptation (LoRA) and Quantized LoRA (QLoRA)---for two specialized analytics-agent components: skill routing and safe, read-only SQL generation. We construct the Synthetic Enterprise Analytics Agent Dataset (SEAAD), a privacy-safe benchmark inspired by enterprise BI agent architectures but containing only public methodology and synthetic warehouse data. SEAAD includes schema-grounded text-to-SQL, seven-way skill routing, structured JSON contracts, and unsafe-query refusal tasks over a fictional GlobalTrade Analytics star schema. We evaluate (i) a deterministic template baseline, (ii) a frozen-encoder classification baseline, (iii) LoRA fine-tuning for skill routing, and (iv) a full QLoRA training pipeline targeting Qwen2.5-3B-Instruct for generative agent outputs on consumer GPUs. On the SEAAD held-out test set ($n{=}166$), LoRA improved 7-way skill-routing accuracy from 27.1\% to 61.5\% and macro-F1 from 0.061 to 0.537 while training only 1.31\% of DistilBERT parameters. The template baseline achieved 92.8\% routing accuracy and 100\% safety refusal but only 23.3\% SQL execution accuracy, motivating learned SQL generation. All experimental data are synthetic; no proprietary organizational schemas or records are used. Code, dataset generators, Snowflake capture adapters, and training scripts are released for local RTX~5090 and Google Colab reproduction under a \$100 compute budget.
+Enterprise business-intelligence (BI) teams increasingly deploy large language model (LLM) agents that translate natural-language questions into database queries, select analytical skills, and summarize results. Hosted frontier models can introduce recurring inference cost and governance concerns, while full-model fine-tuning is often computationally impractical. This paper studies parameter-efficient fine-tuning---Low-Rank Adaptation (LoRA) and Quantized LoRA (QLoRA)---for two specialized analytics-agent components: skill routing and safe, read-only SQL generation. We construct the Synthetic Enterprise Analytics Agent Dataset (SEAAD), a privacy-safe benchmark inspired by enterprise BI agent architectures but containing only public methodology and synthetic warehouse data. SEAAD includes schema-grounded text-to-SQL, seven-way skill routing, structured JSON contracts, and unsafe-query refusal tasks over a fictional GlobalTrade Analytics star schema. We evaluate (i) a deterministic template baseline, (ii) zero-shot and few-shot prompting of the base model, (iii) LoRA fine-tuning of a compact skill-routing classifier, and (iv) QLoRA fine-tuning of Qwen2.5-3B-Instruct at ranks $r\in\{8,16,32\}$ on a single consumer GPU. On the SEAAD held-out test set ($n{=}166$), QLoRA at rank 32 reaches 95.8\% seven-way skill-routing accuracy, 100\% SQL execution accuracy over the 60 gold-SQL test cases, 100\% unsafe-request refusal, and 100\% JSON validity---compared with 92.8\% routing and 23.3\% SQL execution for the template baseline, and 0\% routing and 45.0\% SQL execution for the zero-shot base model---while training 14.7M parameters ($\approx$0.5\% of the base model) with 5.1~GB peak training VRAM. The zero-shot result isolates a structural failure of prompting: the base model emits valid JSON (98.8\%) but cannot recover the agent's internal skill taxonomy, which must be learned or demonstrated. A DistilBERT LoRA router further illustrates parameter-efficient routing (27.1\% to 61.5\% accuracy training 1.31\% of parameters). All experimental data are synthetic; no proprietary organizational schemas or records are used. Code, dataset generators, Snowflake capture adapters, and training scripts are released for local RTX~5090 and Google Colab reproduction under a \$100 compute budget.
 \end{abstract}
 \begin{IEEEkeywords}
 Large language models, LoRA, QLoRA, text-to-SQL, business intelligence, analytics agents, parameter-efficient fine-tuning, skill routing
@@ -135,24 +135,24 @@ Component & Value \\
 Base model & Qwen2.5-3B-Instruct \\
 Quantization & 4-bit NF4, double quant. \\
 LoRA rank $r$ & 8 / 16 / 32 (ablation) \\
-LoRA $\alpha$ & 32 \\
+LoRA $\alpha$ & $2r$ (16 / 32 / 64) \\
 LoRA dropout & 0.05 \\
 Target modules & $q,k,v,o$ projections \\
-Epochs & 2--3 \\
+Epochs & 3 \\
 Learning rate & $2\times10^{-4}$ \\
 Max sequence length & 1024 \\
-Hardware target & RTX 5090 (32~GB) / Colab \\
+Hardware & RTX 5090 Laptop (24~GB) \\
 \bottomrule
 \end{tabular}
 \end{table}
 LoRA updates are $\Delta W = BA$ with $B\in\mathbb{R}^{d\times r}$, $A\in\mathbb{R}^{r\times k}$ and frozen $W_0$~\cite{hu2021lora}. QLoRA keeps $W_0$ in 4-bit form during training~\cite{dettmers2023qlora}. The released pipeline auto-selects batch size from detected VRAM and saves adapters under \texttt{results/adapters/qlora\_r\{r\}/}.
-\subsection{Reported LoRA experiments in this paper}
-Because the paper-build environment lacked a CUDA GPU, we report two completed CPU experiments that still exercise LoRA end-to-end on SEAAD:
+\subsection{Completed training runs}
+All three Qwen2.5-3B QLoRA ablations were trained locally on a single RTX~5090 laptop GPU (24~GB) with the released pipeline (\texttt{scripts/04\_train\_qlora.py}). Trainable parameters were 3.69M, 7.37M, and 14.75M for $r{=}8,16,32$ ($\leq$0.5\% of the base model); peak training VRAM was 5.05--5.11~GB; final training loss decreased monotonically with rank (0.329, 0.254, 0.195).
+Two earlier CPU-only pilots are retained as preliminary studies:
 \begin{enumerate}
 \item \textbf{Generative LoRA pilot (GPT-2).} LoRA rank 16 on attention projections; 60 training samples; 1 epoch; trainable parameters 589{,}824 / 125{,}029{,}632 (0.47\%). Training loss decreased from 4.08 to 3.48, confirming adapter optimization on the SEAAD chat format.
 \item \textbf{Skill-routing LoRA (DistilBERT).} Sequence classification over seven skills; LoRA rank 16 on query/value projections; 2 epochs on 764 training examples; trainable parameters 890{,}887 / 67{,}849{,}742 (1.31\%).
 \end{enumerate}
-The full generative Qwen2.5-3B QLoRA stack is implemented and documented for local RTX~5090 or Colab execution (\texttt{scripts/04\_train\_qlora.py}, notebooks included) and is the recommended path for production-style SQL generation results.
 \section{Evaluating the Result}
 \label{sec:results}
 \subsection{Metrics}
@@ -165,8 +165,36 @@ We report:
 \item JSON / label validity rate
 \item Trainable-parameter count and training loss curves
 \end{itemize}
-\subsection{Skill-routing results}
-Table~\ref{tab:routing} and Figure~\ref{fig:routing} show that LoRA substantially improves learned skill routing over a frozen-encoder baseline on the same test questions.
+To prevent answer leakage, the gold assistant turn is stripped from every prompt at evaluation time; this invariant is enforced by an automated regression test in the released code.
+\subsection{Main results: QLoRA fine-tuning of Qwen2.5-3B}
+Table~\ref{tab:qlora} and Figures~\ref{fig:routing-all} and~\ref{fig:multi} compare all six conditions on the held-out test set.
+\begin{table}[tbp]
+\centering
+\caption{Full evaluation on the SEAAD test set ($n{=}166$; 60 gold-SQL cases). All values are percentages.}
+\label{tab:qlora}
+\begin{tabular}{lccccc}
+\toprule
+Condition & Routing & SQL exec. & Exact SQL & Safety & JSON \\
+\midrule
+Template baseline & 92.8 & 23.3 & 23.3 & 100 & 100 \\
+Base zero-shot & 0.0 & 45.0 & 1.7 & 56.5 & 98.8 \\
+Base 3-shot & 36.8 & 56.7 & 0.0 & 100 & 80.1 \\
+QLoRA $r{=}8$ & 80.1 & 73.3 & 55.0 & 100 & 100 \\
+QLoRA $r{=}16$ & 92.2 & 86.7 & 75.0 & 100 & 100 \\
+QLoRA $r{=}32$ & \textbf{95.8} & \textbf{100.0} & \textbf{91.7} & \textbf{100} & \textbf{100} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/routing_accuracy.png}
+\caption{Seven-way skill-routing accuracy across all conditions.}
+\label{fig:routing-all}
+\end{figure}
+Four observations follow. \textbf{(1) Fine-tuning wins on every metric at rank 32}, exceeding the template baseline on routing (95.8\% vs.\ 92.8\%) and more than quadrupling its SQL execution accuracy (100\% vs.\ 23.3\% over the 60 gold-SQL cases) while matching its perfect safety refusal and JSON validity. \textbf{(2) The output contract must be learned, not assumed.} The zero-shot base model produces syntactically valid JSON 98.8\% of the time yet scores 0\% on routing: the seven-skill taxonomy is internal to the agent architecture and is not recoverable from the system prompt alone. Three in-context examples recover only 36.8\%. \textbf{(3) Execution accuracy exceeds exact match for every learned condition} (e.g., 100\% vs.\ 91.7\% at $r{=}32$), indicating the model generates semantically equivalent SQL in its own surface form rather than reproducing gold strings. \textbf{(4) Quality scales monotonically with rank} on this benchmark, consistent with the training-loss ordering.
+Two caveats apply: SEAAD questions are template-generated paraphrases, so these results measure in-distribution specialization rather than cross-schema generalization (with $n{=}60$ SQL cases, the 95\% Clopper--Pearson interval for a perfect score is [94.0\%, 100\%]); and the template baseline's strong routing partly reflects its shared origin with the data generator.
+\subsection{Compact-router baseline (DistilBERT)}
+Table~\ref{tab:routing} and Figure~\ref{fig:routing} show that LoRA also substantially improves a compact learned router over a frozen-encoder baseline on the same test questions.
 \begin{table}[tbp]
 \centering
 \caption{Skill-routing evaluation on SEAAD test set ($n{=}166$)}
@@ -181,47 +209,27 @@ Template baseline (rules) & 92.8\% & --- & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
-% Combined routing figure: the two single-metric bar charts are placed
-% side by side in ONE float so they no longer stack and eat a whole column.
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=0.49\columnwidth]{figures/routing_accuracy.png}\hfill
-\includegraphics[width=0.49\columnwidth]{figures/macro_f1.png}
-\caption{Learned skill routing on the SEAAD test set: (left)~routing accuracy and (right)~macro-F1 for seven-way classification, comparing the frozen-encoder baseline, LoRA ($r{=}16$), and the template baseline.}
+\includegraphics[width=0.6\columnwidth]{figures/macro_f1.png}
+\caption{Macro-F1 for seven-way routing with the compact DistilBERT router: frozen-encoder baseline vs.\ LoRA ($r{=}16$).}
 \label{fig:routing}
 \end{figure}
-LoRA yields a +34.4 percentage-point absolute gain in accuracy and an approximately $8.8\times$ macro-F1 improvement relative to the frozen-encoder head. The deterministic template baseline remains strongest for routing on this synthetic distribution, indicating that hybrid systems (rules + learned model) are appropriate in production.
-\subsection{SQL, safety, and structured-output baseline}
-Figure~\ref{fig:multi} reports the multi-metric template baseline used as a non-learned reference for SQL and safety behavior.
+LoRA yields a +34.4 percentage-point absolute gain in accuracy and an approximately $8.8\times$ macro-F1 improvement relative to the frozen-encoder head. The DistilBERT router nevertheless trails both the template baseline and the generative QLoRA models, suggesting that routing benefits from the larger model's capacity when the router must also read schema context.
+\subsection{SQL generation across conditions}
+Figure~\ref{fig:multi} isolates SQL execution accuracy. Hand-written patterns excel at refusal and coarse routing but struggle to generate diverse executable SQL (23.3\%); prompting the base model roughly doubles that (45.0--56.7\%); QLoRA specialization closes the remaining gap (73.3--100\%).
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/sql_exec_accuracy.png}
-\caption{Template baseline multi-metric scores. Safety and JSON validity are perfect; SQL execution accuracy remains low (23.3\%), motivating learned SQL generation.}
+\caption{SQL execution accuracy (result-set equivalence on DuckDB, 60 gold-SQL cases) across all conditions.}
 \label{fig:multi}
 \end{figure}
-\begin{table}[tbp]
-\centering
-\caption{Template baseline multi-metric results ($n{=}166$)}
-\label{tab:template}
-\begin{tabular}{lc}
-\toprule
-Metric & Score \\
-\midrule
-Routing accuracy & 92.8\% \\
-SQL execution accuracy & 23.3\% \\
-Exact SQL match & 23.3\% \\
-Safety refusal accuracy & 100\% \\
-JSON validity rate & 100\% \\
-\bottomrule
-\end{tabular}
-\end{table}
-These results show a clear division of labor: hand-written patterns excel at refusal and coarse routing, but struggle to generate diverse executable SQL. This gap is exactly where QLoRA specialization of a generative model is most valuable.
 \subsection{Training dynamics and efficiency}
-Figure~\ref{fig:loss} shows training loss for both LoRA pilots. Figure~\ref{fig:params} compares trainable versus full parameter counts.
+Figure~\ref{fig:loss} shows training loss for the three QLoRA ablations. Figure~\ref{fig:params} compares trainable versus full parameter counts.
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/training_loss.png}
-\caption{Training loss curves for GPT-2 generative LoRA (left) and DistilBERT routing LoRA (right).}
+\caption{Training loss for Qwen2.5-3B QLoRA at $r\in\{8,16,32\}$ (3 epochs, 764 training examples).}
 \label{fig:loss}
 \end{figure}
 \begin{figure}[tbp]
@@ -231,20 +239,21 @@ Figure~\ref{fig:loss} shows training loss for both LoRA pilots. Figure~\ref{fig:
 \label{fig:params}
 \end{figure}
 \subsection{Discussion}
-Results support three conclusions:
+Results support four conclusions:
 \begin{enumerate}
-\item LoRA is effective for analytics-agent skill routing under modest compute, improving accuracy from 27.1\% to 61.5\% with $\approx$1.3\% trainable parameters.
-\item Template systems remain competitive for safety and coarse routing, so production agents should retain deterministic validators.
-\item SQL generation is the hard residual problem: the 23.3\% template SQL execution score shows why a generative QLoRA stage (Qwen2.5-3B on RTX~5090) is the correct next specialization.
+\item QLoRA is effective and cheap for analytics-agent specialization: rank-32 fine-tuning reaches 95.8\% routing and 100\% in-distribution SQL execution accuracy while training $\approx$0.5\% of parameters in 5.1~GB of VRAM on a single consumer GPU.
+\item Prompting cannot substitute for learning the agent contract: the base model's 0\% zero-shot routing despite near-perfect JSON validity shows that architecture-internal taxonomies must be trained or demonstrated, not assumed.
+\item Template systems remain competitive for safety and coarse routing at zero inference cost, so production agents should retain deterministic validators and rules as a complementary layer.
+\item Adapter rank scales quality monotonically on this benchmark, with the largest gains between $r{=}8$ and $r{=}16$ for routing and between $r{=}16$ and $r{=}32$ for SQL execution.
 \end{enumerate}
-Importantly, fine-tuning does not eliminate the need for schema retrieval, read-only roles, SQL allow-lists, row limits, and audit logging.
+Importantly, fine-tuning does not eliminate the need for schema retrieval, read-only roles, SQL allow-lists, row limits, and audit logging; and the in-distribution nature of SEAAD means cross-schema generalization remains untested here.
 \section{Conclusion}
 \label{sec:conclusion}
-This paper identified a practical research problem from BI/AI analytics engineering: adapting smaller open models for skill routing and safe SQL generation inside enterprise analytics agents. We constructed SEAAD, a privacy-safe synthetic benchmark; implemented a complete preprocessing, LoRA/QLoRA training, evaluation, and Snowflake capture pipeline; and demonstrated that LoRA improves learned skill routing from 27.1\% to 61.5\% accuracy while updating only 1.31\% of model parameters. A template baseline confirmed strong safety behavior (100\%) but weak SQL execution accuracy (23.3\%), motivating generative QLoRA specialization. The released codebase is designed for local RTX~5090 training of Qwen2.5-3B-Instruct and for private Snowflake metadata capture without exposing proprietary row data in public research artifacts.
+This paper identified a practical research problem from BI/AI analytics engineering: adapting smaller open models for skill routing and safe SQL generation inside enterprise analytics agents. We constructed SEAAD, a privacy-safe synthetic benchmark; implemented a complete preprocessing, LoRA/QLoRA training, evaluation, and Snowflake capture pipeline; and trained Qwen2.5-3B-Instruct with QLoRA at ranks $r\in\{8,16,32\}$ on a single 24~GB consumer GPU. The rank-32 model reaches 95.8\% seven-way routing accuracy, 100\% in-distribution SQL execution accuracy, 100\% unsafe-request refusal, and 100\% JSON validity---surpassing a strong template baseline (92.8\% routing, 23.3\% SQL execution) and the prompted base model (0\% zero-shot routing)---while training $\approx$0.5\% of parameters in 5.1~GB of VRAM. The results show that the expensive part of an analytics agent to learn is its output contract and SQL competence, both of which parameter-efficient fine-tuning delivers under hobbyist compute budgets. The released codebase supports local RTX~5090 training and private Snowflake metadata capture without exposing proprietary row data in public research artifacts.
 \section{Future Work}
 \label{sec:future}
 \begin{enumerate}
-\item Complete Qwen2.5-3B QLoRA ablations ($r\in\{8,16,32\}$) on RTX~5090 and report SQL execution accuracy against SEAAD and an external Spider subset.
+\item Evaluate cross-schema generalization: score the trained adapters on an external Spider subset and on freshly generated synthetic schemas unseen during training, with confidence intervals over multiple seeds.
 \item Add schema-retrieval / semantic-layer conditioning so models generalize to unseen warehouses.
 \item Train preference or DPO stages on human-corrected SQL from private capture logs.
 \item Evaluate multi-skill tool-calling traces rather than single-turn JSON only.

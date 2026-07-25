@@ -10,68 +10,59 @@
     "latency_ms_p50": 0.01
   },
   "base_zero_shot": {
-    "routing_accuracy": 0.2711,
-    "sql_execution_accuracy": 0.0,
-    "exact_sql_match": 0.0,
-    "safety_refusal_accuracy": 0.0,
-    "json_validity_rate": 1.0,
-    "latency_ms_mean": 5.0,
     "n": 166,
-    "model": "distilbert-base-uncased",
-    "condition": "frozen_encoder_classification_head",
-    "macro_f1": 0.0609
-  },
-  "qlora_r16": {
-    "routing_accuracy": 0.6145,
-    "sql_execution_accuracy": null,
-    "exact_sql_match": null,
-    "safety_refusal_accuracy": null,
-    "json_validity_rate": 1.0,
-    "latency_ms_mean": 8.0,
-    "n": 166,
-    "model": "distilbert-base-uncased",
-    "lora_r": 16,
-    "condition": "lora_skill_router",
-    "macro_f1": 0.5369,
-    "note": "DistilBERT+LoRA skill routing experiment. Generative Qwen2.5-3B QLoRA via scripts/04_train_qlora.py on RTX 5090."
-  },
-  "lora_pilot_r16": {
-    "n": 12,
     "routing_accuracy": 0.0,
-    "json_validity_rate": 0.0,
-    "safety_refusal_accuracy": 0.0,
+    "sql_execution_accuracy": 0.45,
+    "exact_sql_match": 0.0167,
+    "safety_refusal_accuracy": 0.5652,
+    "json_validity_rate": 0.988,
+    "latency_ms_mean": 2907.95,
+    "latency_ms_p50": 2697.31
+  },
+  "base_few_shot": {
+    "n": 166,
+    "routing_accuracy": 0.3675,
+    "sql_execution_accuracy": 0.5667,
     "exact_sql_match": 0.0,
-    "sql_execution_accuracy": 0.0,
-    "latency_ms_mean": 1842.85,
-    "model": "gpt2",
-    "lora_r": 16,
-    "condition": "lora_r16",
-    "pilot": true
+    "safety_refusal_accuracy": 1.0,
+    "json_validity_rate": 0.8012,
+    "latency_ms_mean": 3886.31,
+    "latency_ms_p50": 3163.0
   },
-  "base_classifier_head": {
-    "routing_accuracy": 0.2711,
-    "macro_f1": 0.0609,
+  "qlora_r8": {
     "n": 166,
-    "model": "distilbert-base-uncased",
-    "condition": "frozen_encoder_head"
-  },
-  "lora_routing_r16": {
-    "routing_accuracy": 0.6145,
-    "macro_f1": 0.5369,
-    "n": 166,
-    "model": "distilbert-base-uncased",
-    "lora_r": 16,
-    "json_validity_rate": 1.0,
-    "condition": "lora_r16"
-  },
-  "sql_template_baseline": {
-    "n": 166,
-    "routing_accuracy": 0.9277,
-    "sql_execution_accuracy": 0.2333,
-    "exact_sql_match": 0.2333,
+    "routing_accuracy": 0.8012,
+    "sql_execution_accuracy": 0.7333,
+    "exact_sql_match": 0.55,
     "safety_refusal_accuracy": 1.0,
     "json_validity_rate": 1.0,
-    "latency_ms_mean": 0.01,
-    "latency_ms_p50": 0.01
+    "latency_ms_mean": 3429.17,
+    "latency_ms_p50": 2666.26,
+    "trainable_params": 3686400,
+    "peak_vram_gb": 5.05
+  },
+  "qlora_r16": {
+    "n": 166,
+    "routing_accuracy": 0.9217,
+    "sql_execution_accuracy": 0.8667,
+    "exact_sql_match": 0.75,
+    "safety_refusal_accuracy": 1.0,
+    "json_validity_rate": 1.0,
+    "latency_ms_mean": 3755.96,
+    "latency_ms_p50": 2713.87,
+    "trainable_params": 7372800,
+    "peak_vram_gb": 5.07
+  },
+  "qlora_r32": {
+    "n": 166,
+    "routing_accuracy": 0.9578,
+    "sql_execution_accuracy": 1.0,
+    "exact_sql_match": 0.9167,
+    "safety_refusal_accuracy": 1.0,
+    "json_validity_rate": 1.0,
+    "latency_ms_mean": 3714.11,
+    "latency_ms_p50": 2815.45,
+    "trainable_params": 14745600,
+    "peak_vram_gb": 5.11
   }
 }

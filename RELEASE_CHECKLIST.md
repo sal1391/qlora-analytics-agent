@@ -5,12 +5,10 @@ LinkedIn and list on a grad-school application.
 
 ## 0. Decide first (5 minutes)
 
-- [ ] **Run the real QLoRA training first, or post now?** The RTX 5090 on this
-  machine can run the Qwen2.5-3B ablations (`r ∈ {8,16,32}`). Doing this before
-  posting turns the paper's main promised contribution into reported numbers
-  and removes the "headline experiment wasn't run" weakness. Zenodo supports
-  versioned DOIs, so posting now and uploading v2 later also works — but the
-  v1 PDF is what most people will open.
+- [x] **Training done (2026-07-25).** All three Qwen2.5-3B QLoRA ablations
+  trained and evaluated locally; paper updated with real numbers (r=32:
+  95.8% routing, 100% SQL exec, 100% safety/JSON). Evaluation leakage bug
+  found, fixed, and regression-tested before accepting results.
 - [x] **Affiliation.** Done — set to Florida International University in
   `latex/main.tex` (author block + acknowledgment) and `.zenodo.json`.
   Employer continuation stays out of the paper until it's approved.
