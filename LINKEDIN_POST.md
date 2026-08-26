@@ -26,11 +26,10 @@ Analytics Agent Dataset, specifically for this: a fictional company with a
 fictional star-schema warehouse, and 1,092 instruction records covering
 text-to-SQL, skill routing, clarification, and refusal of unsafe queries.
 Every gold query was executed against the database before it was allowed into
-the dataset, and the whole thing regenerates from a seed, so anyone can
-rebuild it and check my numbers.
+the dataset, and the whole thing regenerates from a seed.
 
-Short answer: yes, and cheaply. QLoRA on Qwen2.5-3B, training half a percent
-of its parameters in about 5 GB of VRAM on a single consumer GPU, took SQL
+It worked, and it was cheap. QLoRA on Qwen2.5-3B, training half a percent of
+its parameters in about 5 GB of VRAM on a single consumer GPU, took SQL
 execution accuracy from 23% (my hand-written rule baseline) to 100% on the
 held-out test set. It beat the rules at skill routing too.
 
