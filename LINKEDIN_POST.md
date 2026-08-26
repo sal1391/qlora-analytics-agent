@@ -21,12 +21,13 @@ necessary or just the habit everyone inherited. Could a small open-weight
 model be fine-tuned to run skills and use tools well enough to take that
 traffic, at a fraction of the cost?
 
-No real enterprise data was harmed in the making of this paper. That was
-requirement number one, and it wasn't a joke: everything runs on SEAAD, a
-fully synthetic benchmark I built for this. Fictional company, fictional star
-schema, 1,092 validated instruction records covering text-to-SQL, skill
-routing, and refusal of unsafe queries. Anyone can regenerate all of it from
-a seed.
+Everything runs on generated data. I built SEAAD, the Synthetic Enterprise
+Analytics Agent Dataset, specifically for this: a fictional company with a
+fictional star-schema warehouse, and 1,092 instruction records covering
+text-to-SQL, skill routing, clarification, and refusal of unsafe queries.
+Every gold query was executed against the database before it was allowed into
+the dataset, and the whole thing regenerates from a seed, so anyone can
+rebuild it and check my numbers.
 
 Short answer: yes, and cheaply. QLoRA on Qwen2.5-3B, training half a percent
 of its parameters in about 5 GB of VRAM on a single consumer GPU, took SQL
@@ -59,11 +60,13 @@ do the skill-running and tool-using at a fraction of the cost?
 
 I decided to find out, on my own time, on my own GPU.
 
-No real enterprise data was harmed in the making of this paper. That was rule
-one, and I meant it: I built SEAAD, a fully synthetic benchmark, so the whole
-thing could be public. Fictional company, fictional star schema, 1,092
-validated records covering text-to-SQL, skill routing, and refusal of unsafe
-queries. Regenerable from a seed by anyone who wants to check my work.
+Everything runs on generated data. I built SEAAD, the Synthetic Enterprise
+Analytics Agent Dataset, for this project: a fictional company with a
+fictional star-schema warehouse, and 1,092 instruction records covering
+text-to-SQL, skill routing, clarification, and refusal of unsafe queries.
+Every gold query was executed against the database before it made it into the
+dataset, and the whole thing regenerates from a seed, so anyone can rebuild it
+and check my work.
 
 It worked better than I expected. QLoRA on Qwen2.5-3B, training half a percent
 of its parameters in 5 GB of VRAM, went from 23% SQL execution accuracy (my
@@ -93,9 +96,19 @@ https://doi.org/10.5281/zenodo.22117133
   reads it, the work speaks; if a colleague reads it, it's a side project you
   published.
 
-### Other phrasings for the privacy line, if you want a different flavor
+### Optional add-on: the token math
+
+Measured from the test set with the Qwen tokenizer. Real numbers, no invented
+cost savings. Drop in after the SEAAD paragraph if you want the cost argument
+made explicitly:
+
+> Every turn of one of these agents carries about 800 tokens of schema and
+> business context before the user's question even starts, and returns about
+> 50 tokens of JSON. Multiply that by every question an analytics team asks in
+> a day and the case for not routing all of it through a frontier model writes
+> itself.
+
+### Witty privacy line, if you want it back
 
 - "No real enterprise data was harmed in the making of this paper."
-- "No production data was harmed in the making of this research. Not one row."
-- "Zero rows of real customer data were involved, which was the whole point."
 - "Every number in this paper comes from a company that doesn't exist."
