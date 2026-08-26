@@ -1,7 +1,12 @@
 # QLoRA Analytics Agent
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22117133.svg)](https://doi.org/10.5281/zenodo.22117133)
+
 **QLoRA fine-tuning of open LLMs for enterprise analytics-agent skill routing and
 safe SQL generation.**
+
+Paper: [Efficient Domain Adaptation of Open Language Models for Enterprise
+Analytics Agents Using LoRA and QLoRA](https://doi.org/10.5281/zenodo.22117133)
 
 This is a self-contained, reproducible research project. It fine-tunes
 **Qwen2.5-3B-Instruct** with **QLoRA (4-bit NF4)** to act as an enterprise BI
@@ -201,3 +206,28 @@ stacked statements, and unknown tables.
 
 *The `latex/` directory contains the IEEE-format paper source (`main.tex`)
 and figures.*
+
+---
+
+## Citation
+
+```bibtex
+@misc{salgado2026seaad,
+  author       = {Salgado, Carlos},
+  title        = {Efficient Domain Adaptation of Open Language Models for
+                  Enterprise Analytics Agents Using LoRA and QLoRA},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22117133},
+  url          = {https://doi.org/10.5281/zenodo.22117133}
+}
+```
+
+Salgado, C. (2026). *Efficient Domain Adaptation of Open Language Models for
+Enterprise Analytics Agents Using LoRA and QLoRA.* Zenodo.
+https://doi.org/10.5281/zenodo.22117133
+
+## License
+
+Code is MIT licensed (see [LICENSE](LICENSE)). The paper and Zenodo record are
+released under CC-BY-4.0.

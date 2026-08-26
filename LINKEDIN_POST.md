@@ -34,7 +34,7 @@ If your baseline looks too good, it is. Fixed, regression-tested, re-run.
 Code, dataset generators, and training scripts are all public and run on a
 single consumer GPU or a few dollars of Colab credits.
 
-Paper + code: https://doi.org/10.5281/zenodo.XXXXXXX
+Paper + code: https://doi.org/10.5281/zenodo.22117133
 
 ---
 
@@ -48,7 +48,7 @@ while the un-tuned base model couldn't route at all (0%) despite emitting
 valid JSON. All code and data generators are public and reproducible on one
 consumer GPU.
 
-https://doi.org/10.5281/zenodo.XXXXXXX
+https://doi.org/10.5281/zenodo.22117133
 
 ## Notes
 
