@@ -21,6 +21,11 @@ necessary or just the habit everyone inherited. Could a small open-weight
 model be fine-tuned to run skills and use tools well enough to take that
 traffic, at a fraction of the cost?
 
+To put a number on it: every turn of one of these agents carries about 800
+tokens of schema and business context before the user's question even starts,
+and returns about 50 tokens of JSON. Multiply that by every question an
+analytics team asks in a day.
+
 Everything runs on generated data. I built SEAAD, the Synthetic Enterprise
 Analytics Agent Dataset, specifically for this: a fictional company with a
 fictional star-schema warehouse, and 1,092 instruction records covering
@@ -57,6 +62,11 @@ writing SQL. That gets expensive fast, and I kept wondering whether it was
 necessary or just convention. Why couldn't a much smaller model be trained to
 do the skill-running and tool-using at a fraction of the cost?
 
+To put a number on it: every turn of one of these agents carries about 800
+tokens of schema and business context before the user's question even starts,
+and returns about 50 tokens of JSON. Multiply that by every question an
+analytics team asks in a day.
+
 I decided to find out, on my own time, on my own GPU.
 
 Everything runs on generated data. I built SEAAD, the Synthetic Enterprise
@@ -89,17 +99,18 @@ https://doi.org/10.5281/zenodo.22117133
   reads it, the work speaks; if a colleague reads it, it's a side project you
   published.
 
-### Optional add-on: the token math
+### Where the token numbers come from
 
-Measured from the test set with the Qwen tokenizer. Real numbers, no invented
-cost savings. Drop in after the SEAAD paragraph if you want the cost argument
-made explicitly:
+The 800-in / 50-out figures are measured, not estimated: run over the 166
+test-set records with the Qwen2.5 tokenizer, input averaged 806 tokens
+(range 798-812) and output averaged 51 (range 34-101). Almost all of the
+input is fixed overhead paid on every turn (schema DDL, business rules,
+metric definitions); the user's actual question is a rounding error.
 
-> Every turn of one of these agents carries about 800 tokens of schema and
-> business context before the user's question even starts, and returns about
-> 50 tokens of JSON. Multiply that by every question an analytics team asks in
-> a day and the case for not routing all of it through a frontier model writes
-> itself.
+No dollar figures anywhere in the post, deliberately. The paper doesn't
+contain a cost analysis, so a savings claim would be unsupported if anyone
+opened the PDF looking for it. A proper throughput/cost benchmark is the
+right thing to add in a v2.
 
 ### Witty privacy line, if you want it back
 
