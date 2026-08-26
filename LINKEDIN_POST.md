@@ -64,18 +64,12 @@ Analytics Agent Dataset, for this project: a fictional company with a
 fictional star-schema warehouse, and 1,092 instruction records covering
 text-to-SQL, skill routing, clarification, and refusal of unsafe queries.
 Every gold query was executed against the database before it made it into the
-dataset, and the whole thing regenerates from a seed, so anyone can rebuild it
-and check my work.
+dataset, and the whole thing regenerates from a seed.
 
 It worked better than I expected. QLoRA on Qwen2.5-3B, training half a percent
 of its parameters in 5 GB of VRAM, went from 23% SQL execution accuracy (my
 rule-based baseline) to 100% on held-out tests, and out-routed the rules as
 well.
-
-The result that stuck with me was a different one. The base model, untouched,
-scored 0% at routing while producing valid JSON nearly every time. It simply
-could not guess the agent's internal skill taxonomy. The contract has to be
-learned, not assumed.
 
 Building the benchmark, training the models, writing it up, and publishing it
 taught me more than I expected going in. All of it is public and reproducible
